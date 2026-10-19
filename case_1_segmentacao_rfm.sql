@@ -31,27 +31,43 @@ rfm_scores AS (
         frequencia,
         valor_monetario,
         NTILE(5) OVER (ORDER BY recencia_dias DESC) AS r_score,
-        NTILE(5) OVER (ORDER BY frequencia ASC) AS f_score,
+        CASE 
+            WHEN frequencia = 1 THEN 1
+            WHEN frequencia = 2 THEN 3
+            ELSE 5
+        END AS f_score,
         NTILE(5) OVER (ORDER BY valor_monetario ASC) AS m_score
     FROM rfm_calculado
+),
+
+rfm_segmentado AS(
+    SELECT 
+        customer_unique_id,
+        recencia_dias,
+        frequencia,
+        valor_monetario,
+        r_score,
+        f_score,
+        m_score,
+        (CAST(r_score AS TEXT) || CAST(f_score AS TEXT) || CAST(m_score AS TEXT)) AS rfm_cell,
+        CASE 
+        WHEN r_score >= 4 AND f_score >= 3 AND m_score >= 4 THEN 'Champions'
+        WHEN r_score >= 3 AND f_score >= 3                  THEN 'Leais'
+        WHEN r_score >= 4 AND f_score = 1                   THEN 'Novos Promissores'
+        WHEN r_score <= 2 AND f_score >= 3                  THEN 'Em Risco de Churn'
+        WHEN r_score <= 2 AND f_score = 1                   THEN 'Inativos / Perdidos'
+        ELSE 'Geral / Em Atenção'
+        END AS segmento_cliente
+    FROM rfm_scores
+    ORDER BY valor_monetario DESC
 )
 
 SELECT 
-    customer_unique_id,
-    recencia_dias,
-    frequencia,
-    valor_monetario,
-    r_score,
-    f_score,
-    m_score,
-    (CAST(r_score AS TEXT) || CAST(f_score AS TEXT) || CAST(m_score AS TEXT)) AS rfm_cell,
-    CASE 
-        WHEN r_score >= 4 AND f_score >= 4 AND m_score >= 4 THEN 'Champions (Super Clientes)'
-        WHEN r_score >= 4 AND f_score <= 2 AND m_score >= 3 THEN 'Novos Promissores'
-        WHEN r_score >= 3 AND f_score >= 2 AND m_score >= 3 THEN 'Leais / Alto Valor'
-        WHEN r_score <= 2 AND f_score >= 2 THEN 'Em Risco de Churn'
-        WHEN r_score <= 2 AND f_score <= 2 THEN 'Inativos / Perdidos'
-        ELSE 'Geral / Em Atenção'
-    END AS segmento_cliente
-FROM rfm_scores
-ORDER BY valor_monetario DESC;
+    segmento_cliente,
+    COUNT(*) AS clientes,
+    ROUND(100.0 * COUNT(*) / SUM(COUNT(*)) OVER (), 1) AS pct_clientes,
+    ROUND(SUM(valor_monetario), 2) AS receita,
+    ROUND(100.0 * SUM(valor_monetario) / SUM(SUM(valor_monetario)) OVER (), 1) AS pct_receita
+FROM rfm_segmentado
+GROUP BY segmento_cliente
+ORDER BY receita DESC;
