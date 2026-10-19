@@ -7,7 +7,7 @@ O objetivo principal é resolver problemas reais de negócios — como retençã
 ---
 
 ##  Índice dos Cases
-- [Case 1: Análise Comportamental e Segmentação RFM de Clientes](Case 1: Análise Comportamental e Segmentação RFM de Clientes)
+- [Case 1: Análise Comportamental e Segmentação RFM de Clientes]([Case 1: Análise Comportamental e Segmentação RFM de Clientes](https://github.com/AV9922/sql-portfolio-anavilha/blob/ad5222bc322403c7c5fc640588bc7b1713aaef36/Case%201%3A%20An%C3%A1lise%20Comportamental%20e%20Segmenta%C3%A7%C3%A3o%20RFM%20de%20Clientes))
 - [Case 2: Experiência do Cliente e Impacto Logístico](#-case-2-experiência-do-cliente-e-impacto-logístico-em-breve) *(Em desenvolvimento)*
 - [Case 3: Desempenho de Vendedores e Curva ABC de Produtos](#-case-3-desempenho-de-vendedores-e-curva-abc-de-produtos-em-breve) *(Em desenvolvimento)*
 
