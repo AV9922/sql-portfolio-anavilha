@@ -40,15 +40,33 @@ desempenho_por_estado AS (
     GROUP BY customer_state
     HAVING COUNT(order_id) > 500
     ORDER BY pct_atraso DESC
+),
+
+tolerancia_atraso AS (
+    SELECT 
+        CASE 
+            WHEN dias_atraso <= 0 THEN '01. No Prazo / Antecipado'
+            WHEN dias_atraso BETWEEN 1 AND 3 THEN '02. 1 a 3 dias de atraso'
+            WHEN dias_atraso BETWEEN 4 AND 7 THEN '03. 4 a 7 dias de atraso'
+            WHEN dias_atraso BETWEEN 8 AND 14 THEN '04. 8 a 14 dias de atraso'
+            ELSE '05. Mais de 14 dias de atraso'
+        END AS faixas_atraso,
+        COUNT(order_id) AS total_pedidos,
+        ROUND(AVG(review_score), 2) AS nota_media_avaliacao
+    FROM entregas_analise
+    GROUP BY 1
+    ORDER BY 1 ASC
 )
 
 -- Consulta final (altere o SELECT conforme o insight que quiser visualizar):
+-- Cada bloco corresponde a uma análise diferente.
+-- Execute apenas o bloco referente à análise desejada.
 
 --  VISÃO 1: Impacto Geral do Atraso na Nota Média
-SELECT * FROM kpis_gerais_prazo;
+SELECT * FROM kpis_gerais_prazo
 
 -- VISÃO 2: Ranking de Atraso e Satisfação por Estado (UF)
--- SELECT * FROM desempenho_por_estado;
+-- SELECT * FROM desempenho_por_estado
 
 -- VISÃO 3: Sensibilidade da Nota por Dias de Atraso
--- SELECT * FROM tolerancia_atraso;
+-- SELECT * FROM tolerancia_atraso
