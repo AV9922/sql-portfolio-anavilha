@@ -36,25 +36,25 @@ Para orientar estratégias de marketing e retenção, classifiquei a base de cli
 
 ### O que foi aplicado em SQL
 * **CTEs Encadeadas:** Estruturação em etapas para manter o código limpo e legível.
-* **Window Functions (`NTILE(5)`):** Separação dos clientes em quintis para a nota de 1 a 5.
+* **Window Functions (`NTILE(5)`):** Separação dos clientes em quintis de recência e valor monetário (notas de 1 a 5). A frequência usa faixas fixas (1, 2 e 3+ pedidos), porque a maioria esmagadora dos clientes tem um único pedido e quintis gerariam empates sem sentido.
 * **Cálculos de Data (`JULIANDAY`):** Identificação exata dos dias desde a última compra.
 * **Lógica Condicional (`CASE WHEN`):** Agrupamento final nos perfis de negócio (Ex: *Champions*, *Leais*, *Em Risco*).
 
 ### Destaques da Análise
 - **A maioria dos clientes comprou apenas uma vez:** cerca de 97% da base tem um único pedido, o que evidencia o desafio de retenção do marketplace.
 - **Receita pulverizada em clientes de compra única:** Novos Promissores e Inativos/Perdidos juntos respondem por ~77% da receita. Champions e Leais somam apenas 3,8%, com ticket médio mais alto (R$ 252 a R$ 373, contra ~R$ 162 dos demais).
-- **Oportunidade:** converter parte dos 36 mil Novos Promissores em segundo pedido teria mais impacto no faturamento do que fidelizar o pequeno grupo que já é recorrente.
+- **Oportunidade:** com 97% da base em compra única, aumentar a taxa de segundo pedido entre os ~36 mil Novos Promissores é a principal alavanca de retenção apontada pela análise.
 
 ---
 
 ## Case 2: Impacto Logístico e Satisfação do Cliente (CX)
 
 ### Contexto
-O prazo de entrega afeta diretamente a nota de avaliação no e-commerce. Esta análise mede a correlação entre atrasos no transporte e queda no *review score*, além de mapear gargalos operacionais por estado (UF).
+Esta análise compara a nota de avaliação entre pedidos entregues no prazo e com atraso, além de mapear gargalos operacionais por estado (UF). Os resultados mostram associação entre atraso e nota baixa, sem isolar outras causas de insatisfação.
 
 ### O que foi aplicado em SQL
 * **Geração de KPIs Operacionais:** Diferenças de datas em dias entre compra, previsão de entrega e entrega real.
-* **Filtros de Representatividade (`HAVING`):** Análise regional focada apenas em estados com volume relevante (> 500 pedidos).
+* **Filtros de Representatividade (`HAVING`):** Análise regional focada apenas em estados com mais de 500 pedidos, o que exclui vários estados com menor volume, em especial do Norte.
 * **Múltiplas Visões na Consulta:** O script permite chavear CTEs para analisar o impacto geral no score, a quebra por UF ou a sensibilidade por dia de atraso.
 
 ### Destaques da Análise
@@ -64,19 +64,30 @@ O prazo de entrega afeta diretamente a nota de avaliação no e-commerce. Esta a
 
 ---
 
-## Case 3: Curva ABC de Produtos e Sellers
+## Case 3: Curva ABC de Categorias e Vendedores
 
 ### Contexto
 Aplicação do Princípio de Pareto para entender a concentração de receita por categoria de produto e identificar a dependência do marketplace em relação aos principais vendedores (*sellers*).
 
 ### O que foi aplicado em SQL
 * **Window Functions Acumuladas (`SUM() OVER(...)`):** Cálculo de faturamento acumulado e % do total para classificação automática da Curva ABC.
-* **Tratamento de Dados (`COALESCE`):** Imputação de categorias não cadastradas para não enviesar a soma.
-* **Regras de Negócio (`CASE WHEN`):** Classificação automática entre Classe A (até 80% da receita), B (80%-95%) e C (95%-100%).
+* **Tratamento de Dados (`COALESCE`):** Produtos sem categoria cadastrada são agrupados como `sem_categoria`, para não distorcer a soma.
+* **Regras de Negócio (`CASE WHEN`):** Classificação automática em Classe A (até 80% da receita), B (80% a 95%) e C (95% a 100%), aplicada a categorias e a vendedores. A categoria ou vendedor que ultrapassa o corte entra na classe anterior. O faturamento considera apenas pedidos entregues e usa o preço dos produtos, sem frete.
 
 ### Destaques da Análise
-* **Concentração na Classe A:** Poucas categorias (como *Cama, Mesa e Banho*, *Beleza e Saúde* e *Esporte e Lazer*) concentram cerca de **80% do faturamento total**.
-* **Acompanhamento dos principais vendedores:** O mapeamento dos vendedores da Classe A permite que o time comercial crie planos específicos de retenção para evitar a perda desses parceiros.
+
+- **Concentração em categorias:** 18 das 74 categorias (~24%) geram **81,3%** do faturamento. As maiores são Beleza e Saúde (9,3%), Relógios e Presentes (8,8%) e Cama, Mesa e Banho (7,7%). As 40 categorias da Classe C somam apenas **4,8%** da receita.
+- **Concentração em vendedores:** 533 vendedores (17,9% dos 2.970) respondem por **80,0%** do faturamento, enquanto 1.702 (57,3%) formam a Classe C, com apenas 5,0%.
+- **Dependência do grupo, não de um nome:** o maior vendedor representa 1,7% do total e os 10 maiores somam 13,3%. O risco está na Classe A como conjunto, o que justifica um plano de retenção para esses 533 parceiros.
+- **Observação de qualidade de dados:** a categoria `sem_categoria` representa ~1,3% do faturamento, indicando produtos sem cadastro.
+
+### Tabela Resumo - Case 3
+
+| Classe | Vendedores | % dos vendedores | % do faturamento |
+|--------|-----------:|-----------------:|-----------------:|
+| A      | 533        | 17,9%            | 80,0%            |
+| B      | 735        | 24,7%            | 15,0%            |
+| C      | 1.702      | 57,3%            | 5,0%             |
 
 ---
 
