@@ -3,10 +3,10 @@ WITH entregas_analise AS(
         t1.order_id,
         t3.customer_state,
         t2.review_score,
-        CAST(julianday(t1.order_delivered_customer_date) - julianday(o.order_purchase_timestamp) AS INT) AS dias_para_entrega,
-        CAST(julianday(t1.order_delivered_customer_date) - julianday(o.order_estimated_delivery_date) AS INT) AS dias_atraso,
+        CAST(julianday(t1.order_delivered_customer_date) - julianday(t1.order_purchase_timestamp) AS INT) AS dias_para_entrega,
+        CAST(julianday(t1.order_delivered_customer_date) - julianday(t1.order_estimated_delivery_date) AS INT) AS dias_atraso,
         CASE 
-            WHEN julianday(t1.order_delivered_customer_date) > julianday(o.order_estimated_delivery_date) THEN 'Com Atraso'
+            WHEN julianday(t1.order_delivered_customer_date) > julianday(t1.order_estimated_delivery_date) THEN 'Com Atraso'
             ELSE 'No Prazo'
         END AS status_prazo
     FROM tb_orders AS t1
