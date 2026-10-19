@@ -47,12 +47,11 @@ SELECT
     (CAST(r_score AS TEXT) || CAST(f_score AS TEXT) || CAST(m_score AS TEXT)) AS rfm_cell,
     CASE 
         WHEN r_score >= 4 AND f_score >= 4 AND m_score >= 4 THEN 'Champions (Super Clientes)'
-        WHEN r_score >= 3 AND f_score >= 1 AND m_score >= 3 THEN 'Leais / Alto Valor'
-        WHEN r_score >= 4 AND f_score = 1 THEN 'Novos Promissores'
-        WHEN r_score <= 2 AND f_score >= 3 THEN 'Em Risco de Churn'
+        WHEN r_score >= 4 AND f_score <= 2 AND m_score >= 3 THEN 'Novos Promissores'
+        WHEN r_score >= 3 AND f_score >= 2 AND m_score >= 3 THEN 'Leais / Alto Valor'
+        WHEN r_score <= 2 AND f_score >= 2 THEN 'Em Risco de Churn'
         WHEN r_score <= 2 AND f_score <= 2 THEN 'Inativos / Perdidos'
         ELSE 'Geral / Em Atenção'
     END AS segmento_cliente
 FROM rfm_scores
-
 ORDER BY valor_monetario DESC;
