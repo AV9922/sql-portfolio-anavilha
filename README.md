@@ -7,7 +7,7 @@ O objetivo principal é resolver problemas reais de negócios — como retençã
 ---
 
 ##  Índice dos Cases
-- [Case 1: Análise Comportamental e Segmentação RFM de Clientes](#-case-1-análise-comportamental-e-segmentação-rfm-de-clientes)
+- [Case 1: Análise Comportamental e Segmentação RFM de Clientes](Case 1: Análise Comportamental e Segmentação RFM de Clientes)
 - [Case 2: Experiência do Cliente e Impacto Logístico](#-case-2-experiência-do-cliente-e-impacto-logístico-em-breve) *(Em desenvolvimento)*
 - [Case 3: Desempenho de Vendedores e Curva ABC de Produtos](#-case-3-desempenho-de-vendedores-e-curva-abc-de-produtos-em-breve) *(Em desenvolvimento)*
 
