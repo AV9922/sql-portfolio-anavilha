@@ -6,6 +6,20 @@ Neste projeto, usei SQL para analisar três aspectos da operação da Olist: rec
 
 ---
 
+## Tecnologias e Fonte de Dados
+
+**Banco de dados:** SQLite
+
+**Linguagem:** SQL
+
+**Base de dados:** [Brazilian E-Commerce Public Dataset by Olist](https://www.kaggle.com/datasets/olistbr/brazilian-ecommerce)
+
+O projeto utiliza a base pública de e-commerce disponibilizada pela Olist no Kaggle, com aproximadamente 100 mil pedidos realizados entre 2016 e 2018. O conjunto de dados contém informações sobre pedidos, clientes, produtos, vendedores, pagamentos, entregas e avaliações.
+
+As consultas foram desenvolvidas em SQLite, utilizando CTEs, funções de janela (*Window Functions*), agregações, cálculos de datas e expressões condicionais para investigar padrões de compra, desempenho logístico e concentração de faturamento.
+
+---
+
 ##  Links Rápidos para os Scripts
 **Case 1:** [Segmentação RFM de Clientes](./case_1_segmentacao_rfm.sql)
 
@@ -27,7 +41,7 @@ Para orientar estratégias de marketing e retenção, classifiquei a base de cli
 * **Lógica Condicional (`CASE WHEN`):** Agrupamento final nos perfis de negócio (Ex: *Champions*, *Leais*, *Em Risco*).
 
 ### Destaques da Análise
-* **Volume esmagador de compra única:** A grande maioria dos clientes possui apenas 1 pedido registrado na base, evidenciando o desafio de retenção do marketplace.
+* **A maioria dos clientes fez apenas um pedido:** A grande maioria dos clientes possui apenas 1 pedido registrado na base, evidenciando o desafio de retenção do marketplace.
 * **Concentração no topo:** Os segmentos *Champions* e *Leais* representam a maior fatia do faturamento, justificando ações exclusivas de fidelização.
 
 ---
@@ -60,7 +74,7 @@ Aplicação do Princípio de Pareto para entender a concentração de receita po
 
 ### Destaques da Análise
 * **Concentração na Classe A:** Poucas categorias (como *Cama, Mesa e Banho*, *Beleza e Saúde* e *Esporte e Lazer*) concentram cerca de **80% do faturamento total**.
-* **Gestão de Key Accounts:** O mapeamento dos vendedores da Classe A permite que o time comercial crie planos específicos de retenção para evitar a perda desses parceiros.
+* **Acompanhamento dos principais vendedores:** O mapeamento dos vendedores da Classe A permite que o time comercial crie planos específicos de retenção para evitar a perda desses parceiros.
 
 ---
 
