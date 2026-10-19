@@ -65,7 +65,7 @@ concentracao_vendedores AS (
 )
 
 -- ==============================================================================
--- CONSULTAS FINAIS (Descomente a visão que deseja analisar)
+-- CONSULTAS FINAIS (Selecione a consulta correspondente à análise que deseja realizar)
 -- ==============================================================================
 
 --  VISÃO 1: Curva ABC de Categorias de Produtos
