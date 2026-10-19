@@ -41,8 +41,9 @@ Para orientar estratégias de marketing e retenção, classifiquei a base de cli
 * **Lógica Condicional (`CASE WHEN`):** Agrupamento final nos perfis de negócio (Ex: *Champions*, *Leais*, *Em Risco*).
 
 ### Destaques da Análise
-* **A maioria dos clientes fez apenas um pedido:** A grande maioria dos clientes possui apenas 1 pedido registrado na base, evidenciando o desafio de retenção do marketplace.
-* **Concentração no topo:** Os segmentos *Champions* e *Leais* representam a maior fatia do faturamento, justificando ações exclusivas de fidelização.
+- **A maioria dos clientes comprou apenas uma vez:** cerca de 97% da base tem um único pedido, o que evidencia o desafio de retenção do marketplace.
+- **Receita pulverizada em clientes de compra única:** Novos Promissores e Inativos/Perdidos juntos respondem por ~77% da receita. Champions e Leais somam apenas 3,8%, com ticket médio mais alto (R$ 252 a R$ 373, contra ~R$ 162 dos demais).
+- **Oportunidade:** converter parte dos 36 mil Novos Promissores em segundo pedido teria mais impacto no faturamento do que fidelizar o pequeno grupo que já é recorrente.
 
 ---
 
