@@ -6,15 +6,11 @@ WITH faturamento_por_categoria AS (
         SUM(t1.price) AS faturamento_produtos,
         SUM(t1.price + t1.freight_value) AS receita_total
     FROM tb_order_items AS t1
-
     JOIN tb_products AS t2 
     ON t1.product_id = t2.product_id
-
     JOIN tb_orders AS t3 
     ON t1.order_id = t3.order_id
-
     WHERE t3.order_status = 'delivered'
-
     GROUP BY COALESCE(t2.product_category_name, 'outros')
 ),
 
@@ -51,16 +47,16 @@ classificacao_abc AS(
 
 concentracao_vendedores AS (
     SELECT 
-        s.seller_id,
-        s.seller_state,
-        COUNT(DISTINCT i.order_id) AS total_pedidos,
-        SUM(i.price) AS faturamento_vendedor,
-        ROUND((SUM(i.price) * 100.0) / SUM(SUM(i.price)) OVER(), 2) AS pct_faturamento_global
-    FROM olist_order_items_dataset i
-    JOIN olist_sellers_dataset s ON i.seller_id = s.seller_id
-    JOIN olist_orders_dataset o ON i.order_id = o.order_id
-    WHERE o.order_status = 'delivered'
-    GROUP BY s.seller_id, s.seller_state
+        t2.seller_id,
+        t2.seller_state,
+        COUNT(DISTINCT t1.order_id) AS total_pedidos,
+        SUM(t1.price) AS faturamento_vendedor,
+        ROUND((SUM(t1.price) * 100.0) / SUM(SUM(t1.price)) OVER(), 2) AS pct_faturamento_global
+    FROM tb_order_items AS t1
+    JOIN tb_sellers AS t2 ON t1.seller_id = t2.seller_id
+    JOIN tb_orders AS t3 ON t1.order_id = t3.order_id
+    WHERE t3.order_status = 'delivered'
+    GROUP BY t2.seller_id, t2.seller_state
     ORDER BY faturamento_vendedor DESC
 )
 
