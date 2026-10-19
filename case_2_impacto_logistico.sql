@@ -1,16 +1,20 @@
-WITH entregas_analise AS(
+WITH entregas_analise AS (
     SELECT 
         t1.order_id,
         t3.customer_state,
         t2.review_score,
-        CAST(julianday(t1.order_delivered_customer_date) - julianday(t1.order_purchase_timestamp) AS INT) AS dias_para_entrega,
-        CAST(julianday(t1.order_delivered_customer_date) - julianday(t1.order_estimated_delivery_date) AS INT) AS dias_atraso,
+        julianday(t1.order_delivered_customer_date) - julianday(t1.order_purchase_timestamp) AS dias_para_entrega,
+        CAST(julianday(date(t1.order_delivered_customer_date)) - julianday(date(t1.order_estimated_delivery_date)) AS INT) AS dias_atraso,
         CASE 
-            WHEN julianday(t1.order_delivered_customer_date) > julianday(t1.order_estimated_delivery_date) THEN 'Com Atraso'
+            WHEN date(t1.order_delivered_customer_date) > date(t1.order_estimated_delivery_date) THEN 'Com Atraso'
             ELSE 'No Prazo'
         END AS status_prazo
     FROM tb_orders AS t1
-    JOIN tb_order_reviews AS t2 ON t1.order_id = t2.order_id
+    JOIN (
+        SELECT order_id, AVG(review_score) AS review_score
+        FROM tb_order_reviews
+        GROUP BY order_id
+    ) AS t2 ON t1.order_id = t2.order_id
     JOIN tb_customers AS t3 ON t1.customer_id = t3.customer_id
     WHERE t1.order_status = 'delivered'
       AND t1.order_delivered_customer_date IS NOT NULL
@@ -57,6 +61,7 @@ tolerancia_atraso AS (
     GROUP BY 1
     ORDER BY 1 ASC
 )
+
 
 -- Consulta final (altere o SELECT conforme o insight que quiser visualizar):
 -- Cada bloco corresponde a uma análise diferente.
