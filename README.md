@@ -9,7 +9,7 @@ O objetivo principal é resolver problemas reais de negócios — como retençã
 ##  Índice dos Cases
 - [Case 1: Análise Comportamental e Segmentação RFM de Clientes]([Case 1: Análise Comportamental e Segmentação RFM de Clientes](https://github.com/AV9922/sql-portfolio-anavilha/blob/ad5222bc322403c7c5fc640588bc7b1713aaef36/Case%201%3A%20An%C3%A1lise%20Comportamental%20e%20Segmenta%C3%A7%C3%A3o%20RFM%20de%20Clientes))
 - [Case 2: Experiência do Cliente e Impacto Logístico](https://github.com/AV9922/sql-portfolio-anavilha/blob/3c0649270defd1dc4c5b37d60615f95dda38b035/case_2_impacto_logistico.sql)
-- [Case 3: Desempenho de Vendedores e Curva ABC de Produtos](#-case-3-desempenho-de-vendedores-e-curva-abc-de-produtos-em-breve) *(Em desenvolvimento)*
+- [Case 3: Desempenho de Vendedores e Curva ABC de Produtos]
 
 ---
 
@@ -50,7 +50,7 @@ Este case analisa a relação entre o tempo de transporte (*shipping days*), o c
 
 ---
 
-### 🔍 Visões Analíticas Disponíveis no Script SQL
+###  Visões Analíticas Disponíveis no Script SQL
 O arquivo [`case_2_impacto_logistico.sql`](./case_2_impacto_logistico.sql) foi estruturado em blocos modulares via CTEs. Ao final do script, é possível alternar a consulta para obter 3 visões estratégicas:
 
 1. **Visão de Impacto Direto (`kpis_gerais_prazo`):** Compara a nota média de avaliação e o tempo médio de entrega entre pedidos entregues **No Prazo** vs. **Com Atraso**.
@@ -59,22 +59,49 @@ O arquivo [`case_2_impacto_logistico.sql`](./case_2_impacto_logistico.sql) foi e
 
 ---
 
-### 💡 Principais Insights Encontrados
+###  Principais Insights Encontrados
 - **Penalização Severa por Atraso:** Pedidos entregues dentro do prazo mantêm uma nota média satisfatória (**~4.2 estrelas**), enquanto entregas com atraso provocam uma queda drástica na avaliação média (**~1.7 estrelas**), aumentando significativamente a proporção de avaliações 1 e 2.
 - **Gargalo Logístico Regional:** Estados das regiões Norte e Nordeste apresentam taxas percentuais de atraso superiores à média nacional, concentrando as menores notas médias de satisfação e indicando a necessidade de renegociação com parceiros logísticos locais.
 
 ---
 
-📁 **Código do Case 2:** [`case_2_impacto_logistico.sql`](./case_2_impacto_logistico.sql)
+ **Código do Case 2:** [`case_2_impacto_logistico.sql`](./case_2_impacto_logistico.sql)
 
 ---
 
-## Case 3: Desempenho de Vendedores e Curva ABC de Produtos *(Em breve)*
+##  Case 3: Desempenho de Vendedores e Curva ABC de Produtos (Commercial Analytics)
 
-### Problema de Negócio
-Avaliar a concentração de vendas por categoria de produto e a distribuição de receita entre os vendedores cadastrados no marketplace (Análise de Pareto).
+###  Problema de Negócio
+Em um marketplace, compreender a distribuição de faturamento por categoria e a concentração de receita entre os vendedores é fundamental para a gestão de estoque, estratégias de aquisição de parceiros (*sellers*) e diversificação do catálogo de produtos.
 
-**Código do Case 3:** *(Em breve)*
+Este case aplica o princípio de **Pareto (Curva ABC)** para classificar o catálogo por relevância financeira e mapear a dependência do negócio em relação aos principais vendedores da plataforma.
+
+---
+
+### 🛠️ Conceitos e Técnicas de SQL Utilizadas
+- **Window Functions de Acúmulo (`SUM() OVER(ORDER BY ...)`):** Cálculo da receita acumulada em ordem decrescente para aplicação do Princípio de Pareto.
+- **Window Functions Globais (`SUM() OVER()`):** Cálculo do percentual individual e acumulado de faturamento sem necessidade de subqueries isoladas.
+- **Tratamento de Valoração e Nulos (`COALESCE`):** Padronização de produtos sem categoria informada.
+- **Classificação Lógica (`CASE WHEN`):** Divisão automática nas classes A (Até 80% da receita), B (80% a 95%) e C (95% a 100%).
+
+---
+
+###  Visões Analíticas Disponíveis no Script SQL
+O arquivo [`case_3_vendedores_curva_abc.sql`](./case_3_vendedores_curva_abc.sql) está estruturado em duas análises complementares:
+
+1. **Curva ABC de Categorias (`classificacao_abc`):** Classifica todas as categorias cadastradas na plataforma conforme sua contribuição financeira para a receita global.
+2. **Concentração Financeira de Vendedores (`concentracao_vendedores`):** Exibe o ranking dos *sellers*, calculando a representatividade individual de cada um sobre o faturamento total do e-commerce.
+
+---
+
+###  Principais Insights Encontrados
+- **Forte Concentração em Poucas Categorias (Classe A):** Um grupo reduzido de categorias (como *Cama, Mesa e Banho*, *Beleza e Saúde*, *Esporte e Lazer* e *Informática/Acessórios*) responde por cerca de **80% de todo o faturamento** da Olist, caracterizando a Classe A da Curva ABC.
+- **Cauda Longa Diversificada (Classe C):** Dezenas de categorias representam individualmente menos de 1% da receita, indicando um catálogo com alta diversidade, mas com relevância financeira secundária.
+- **Distribuição de Vendedores:** Mapear os vendedores da Classe A permite que a equipe comercial crie planos de retenção específicos para evitar o *churn* de parceiros vitais para a plataforma.
+
+---
+
+ **Código do Case 3:** [`case_3_vendedores_curva_abc.sql`](./case_3_vendedores_curva_abc.sql)
 
 ---
 
