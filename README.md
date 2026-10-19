@@ -58,8 +58,9 @@ O prazo de entrega afeta diretamente a nota de avaliação no e-commerce. Esta a
 * **Múltiplas Visões na Consulta:** O script permite chavear CTEs para analisar o impacto geral no score, a quebra por UF ou a sensibilidade por dia de atraso.
 
 ### Destaques da Análise
-* **Impacto na Nota:** Pedidos no prazo mantêm média de **~4.2 estrelas**, enquanto entregas com atraso despencam para **~1.7 estrelas** (com explosão de avaliações 1 e 2).
-* **Gargalo Regional:** Na comparação entre os estados, algumas regiões do Norte e Nordeste apresentaram mais atrasos e avaliações médias menores. Esse resultado ajuda a identificar onde vale investigar possíveis problemas na operação logística.
+- **Impacto na nota:** pedidos no prazo têm nota média de **4,28**; pedidos atrasados caem para **2,26**. Os atrasos somam ~6,8% das entregas, e o tempo médio de entrega vai de 11 para 34 dias.
+- **Sensibilidade ao atraso:** apenas 1 a 3 dias já derrubam a nota para 3,28; de 4 a 7 dias ela cai para 2,09, e a partir de 8 dias estabiliza em torno de 1,7.
+- **Gargalo regional:** entre os estados com mais de 500 pedidos, o MA tem o maior índice de atraso (17,4%, nota 3,81), seguido de CE (13,8%) e BA (12,2%). O RJ também se destaca (12,1%) e, pelo volume, soma quase 1,5 mil pedidos atrasados. PR, SP e MG têm os menores índices (~4 a 4,6%) e notas em torno de 4,2.
 
 ---
 
