@@ -29,7 +29,7 @@ Plataformas de marketplace precisam identificar o valor de sua base de clientes 
 - **Alta Comportabilidade Transacional:** A esmagadora maioria da base possui apenas 1 pedido realizado, revelando uma oportunidade crítica para estratégias de *cross-sell* e fidelização.
 - **Concentração de Receita:** Os segmentos de alto valor (*Champions* e *Leais*) concentram a maior parte do faturamento, demandando ações de atendimento diferenciadas.
 
- **Código do Case 1:** [`case_1_segmentacao_rfm.sql`](./case_1_segmentacao_rfm.sql)](https://github.com/AV9922/sql-portfolio-anavilha/blob/ad5222bc322403c7c5fc640588bc7b1713aaef36/Case%201%3A%20An%C3%A1lise%20Comportamental%20e%20Segmenta%C3%A7%C3%A3o%20RFM%20de%20Clientes).
+ **Código do Case 1:** [`case_1_segmentacao_rfm.sql`](./case_1_segmentacao_rfm.sql)
 
 ---
 
