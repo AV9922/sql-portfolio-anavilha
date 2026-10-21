@@ -20,6 +20,14 @@ As consultas foram desenvolvidas em SQLite, utilizando CTEs, funções de janela
 
 ---
 
+## Como reproduzir
+
+1. Baixe o dataset no Kaggle (Brazilian E-Commerce Public Dataset by Olist).
+2. Importe os CSVs no SQLite, usando as tabelas `tb_orders`, `tb_customers`, `tb_order_items`, `tb_order_reviews`, `tb_products` e `tb_sellers`.
+3. Execute os scripts da pasta correspondente a cada case.
+
+---
+
 ##  Links Rápidos para os Scripts
 **Case 1:** [Segmentação RFM de Clientes](./case_1_segmentacao_rfm.sql)
 
@@ -39,12 +47,39 @@ Para orientar estratégias de marketing e retenção, classifiquei a base de cli
 * **Window Functions (`NTILE(5)`):** Separação dos clientes em quintis de recência e valor monetário (notas de 1 a 5). A frequência usa faixas fixas (1, 2 e 3+ pedidos), porque a maioria esmagadora dos clientes tem um único pedido e quintis gerariam empates sem sentido.
 * **Cálculos de Data (`JULIANDAY`):** Identificação exata dos dias desde a última compra.
 * **Lógica Condicional (`CASE WHEN`):** Agrupamento final nos perfis de negócio (Ex: *Champions*, *Leais*, *Em Risco*).
+* **Definição de Valor Monetário:** soma de `price + freight_value` dos pedidos entregues, ou seja, o quanto o cliente efetivamente pagou (diferente do Case 3, que considera só o preço dos produtos).
+* **Data de referência da recência:** 17/10/2018, correspondente ao fim do período coberto pela base. Como os dados são históricos, usar a data atual distorceria todos os cálculos.
+
+### Regras de segmentação
+
+| Segmento | Regra |
+|---|---|
+| Champions | R ≥ 4, F ≥ 3 e M ≥ 4 |
+| Leais | R ≥ 3 e F ≥ 3 |
+| Novos Promissores | R ≥ 4 e F = 1 |
+| Em Risco de Churn | R ≤ 2 e F ≥ 3 |
+| Inativos / Perdidos | R ≤ 2 e F = 1 |
+| Geral / Em Atenção | demais combinações |
+
+### Resultado: Segmentos RFM
+
+| Segmento | Clientes | % Clientes | Receita (R$) | % Receita |
+|---|---:|---:|---:|---:|
+| Novos Promissores | 36.139 | 38,7% | 5.948.724,32 | 38,6% |
+| Inativos / Perdidos | 36.357 | 38,9% | 5.871.130,96 | 38,1% |
+| Geral / Em Atenção | 18.061 | 19,3% | 2.735.731,01 | 17,7% |
+| Champions | 985 | 1,1% | 367.539,93 | 2,4% |
+| Em Risco de Churn | 987 | 1,1% | 287.825,33 | 1,9% |
+| Leais | 829 | 0,9% | 208.822,20 | 1,4% |
+> Percentuais arredondados; a soma pode diferir de 100% por arredondamento.
+
 
 ### Destaques da Análise
 - **A maioria dos clientes comprou apenas uma vez:** cerca de 97% da base tem um único pedido, o que evidencia o desafio de retenção do marketplace.
-- **Receita pulverizada em clientes de compra única:** Novos Promissores e Inativos/Perdidos juntos respondem por ~77% da receita. Champions e Leais somam apenas 3,8%, com ticket médio mais alto (R$ 252 a R$ 373, contra ~R$ 162 dos demais).
+- **Receita pulverizada em clientes de compra única:** Novos Promissores e Inativos/Perdidos juntos respondem por ~77% da receita. Champions e Leais somam apenas 3,8%, com ticket médio mais alto (R$ 252 a R$ 373, contra ~R$ 162 dos demais, valores incluindo frete).
 - **Oportunidade:** com 97% da base em compra única, aumentar a taxa de segundo pedido entre os ~36 mil Novos Promissores é a principal alavanca de retenção apontada pela análise.
 
+> **Limitação:** como ~97% dos clientes têm um único pedido, a frequência separa pouco os perfis e a segmentação é guiada principalmente por recência e valor. Os segmentos Champions e Leais ficam pequenos por natureza da base, não por falha do método.
 ---
 
 ## Case 2: Impacto Logístico e Satisfação do Cliente (CX)
@@ -56,12 +91,18 @@ Esta análise compara a nota de avaliação entre pedidos entregues no prazo e c
 * **Geração de KPIs Operacionais:** Diferenças de datas em dias entre compra, previsão de entrega e entrega real.
 * **Filtros de Representatividade (`HAVING`):** Análise regional focada apenas em estados com mais de 500 pedidos, o que exclui vários estados com menor volume, em especial do Norte.
 * **Múltiplas Visões na Consulta:** O script permite chavear CTEs para analisar o impacto geral no score, a quebra por UF ou a sensibilidade por dia de atraso.
+*  **Nota média por pedido:** como um pedido pode ter mais de uma avaliação, calculei a média por `order_id` antes do JOIN, evitando duplicar pedidos e inflar contagens.
+* **Atraso medido em dias corridos:** diferença entre a data real de entrega e a data estimada, comparando apenas a data (sem horário).
 
 ### Destaques da Análise
 - **Impacto na nota:** pedidos no prazo têm nota média de **4,28**; pedidos atrasados caem para **2,26**. Os atrasos somam ~6,8% das entregas, e o tempo médio de entrega vai de 11 para 34 dias.
 - **Sensibilidade ao atraso:** apenas 1 a 3 dias já derrubam a nota para 3,28; de 4 a 7 dias ela cai para 2,09, e a partir de 8 dias estabiliza em torno de 1,7.
 - **Gargalo regional:** entre os estados com mais de 500 pedidos, o MA tem o maior índice de atraso (17,4%, nota 3,81), seguido de CE (13,8%) e BA (12,2%). O RJ também se destaca (12,1%) e, pelo volume, soma quase 1,5 mil pedidos atrasados. PR, SP e MG têm os menores índices (~4 a 4,6%) e notas em torno de 4,2.
 
+> **Limitações:**
+> - A análise considera apenas pedidos com status `delivered`. Cancelados e não entregues ficam de fora, e podem ser os casos mais graves de insatisfação.
+> - Só existe nota para quem avaliou, então há viés de resposta.
+> - Não foram controladas outras causas (categoria, vendedor, preço, região). A relação atraso × nota é uma associação, não prova causalidade.
 ---
 
 ## Case 3: Curva ABC de Categorias e Vendedores
